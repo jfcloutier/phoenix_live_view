@@ -336,9 +336,12 @@ class LiveUploader {
   }
 
   static filesAwaitingPreflight(input) {
-    console.log("[LiveFileUpload] filesAwaitingPreflight with input...")
-    console.log(input)
-    return this.activeFiles(input).filter(f => !UploadEntry.isPreflighted(input, f))
+    console.log("[LiveFileUpload] filesAwaitingPreflight with input activeFiles...")
+    console.log(this.activeFiles(input))
+    answer =  this.activeFiles(input).filter(f => !UploadEntry.isPreflighted(input, f))
+    console.log("Files awaiting preflight...")
+    console.log(answer)
+    return answer
   }
 
   constructor(inputEl, view, onComplete) {
