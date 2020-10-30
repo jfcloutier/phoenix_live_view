@@ -325,7 +325,9 @@ class LiveUploader {
   }
 
   static inputsAwaitingPreflight(formEl) {
+    console.log("[LiveFileUpload] inputsAwaitingPreflight with fileInputs...")
     let fileInputs = formEl.querySelectorAll(`input[type="file"]`)
+    console.log(fileInputs)
     return Array.from(fileInputs).filter(input => this.filesAwaitingPreflight(input).length > 0)
   }
 
