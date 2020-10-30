@@ -2691,6 +2691,7 @@ export class View {
       refGenerator()
       return this.scheduleSubmit(formEl, () => this.pushFormSubmit(formEl, targetCtx, phxEvent, onReply))
     } else if (LiveUploader.inputsAwaitingPreflight(formEl).length > 0) {
+      console.log("[LiveFileUpload] inputs awating preflight > 0")
       let [ref, els] = refGenerator()
       let proxyRefGen = () => [ref, els]
       this.uploadFiles(formEl, targetCtx, ref, cid, (uploads) => {
@@ -2703,6 +2704,7 @@ export class View {
         }, onReply)
       })
     } else {
+      console.log("[LiveFileUpload] inputs awating preflight == 0")
       let formData = serializeForm(formEl)
       this.pushWithReply(refGenerator, "event", {
         type: "form",
