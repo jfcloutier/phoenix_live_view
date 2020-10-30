@@ -332,9 +332,9 @@ class LiveUploader {
     console.log("[LiveFileUpload] activeFiles with DOM input and its files...")
     console.log(input)
     console.log(input.files)
-    // console.log(DOM.private(input, "files"))
-    // return (DOM.private(input, "files") || []).filter(f => UploadEntry.isActive(input, f))
-    return (input.files || []).filter(f => UploadEntry.isActive(input, f))
+    // BUG - RETURNS UNDEF event when input.files contains the file being uploaded
+    console.log(DOM.private(input, "files"))
+    return (DOM.private(input, "files") || []).filter(f => UploadEntry.isActive(input, f))
   }
 
   static inputsAwaitingPreflight(formEl) {
