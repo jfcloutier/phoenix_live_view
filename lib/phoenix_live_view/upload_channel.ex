@@ -7,10 +7,13 @@ defmodule Phoenix.LiveView.UploadChannel do
   alias Phoenix.LiveView.{Static, Channel}
 
   def cancel(pid) do
+    Logger.warn("[LiveView - Channel] cancel")
     GenServer.call(pid, :cancel)
   end
 
   def consume(pid, entry, func) when is_function(func, 1) or is_function(func, 2) do
+    Logger.warn("[LiveView - Channel] consume #{inspect(entry)}")
+
     case GenServer.call(pid, {:consume, entry, func}) do
       {:ok, result} ->
         result
@@ -22,6 +25,7 @@ defmodule Phoenix.LiveView.UploadChannel do
 
   @impl true
   def join(_topic, auth_payload, socket) do
+    Logger.warn("[LiveView - Channel] join")
     %{"token" => token} = auth_payload
 
     with {:ok, %{pid: pid, ref: ref}} <- Static.verify_token(socket.endpoint, token),
@@ -52,6 +56,7 @@ defmodule Phoenix.LiveView.UploadChannel do
 
   @impl true
   def handle_in("chunk", {:binary, payload}, socket) do
+    Logger.warn("[LiveView - Channel] handle_in #{inspect(payload)}")
     %{uploaded_size: uploaded_size, max_file_size: max_file_size} = socket.assigns
     socket = reschedule_chunk_timer(socket)
 
@@ -68,16 +73,20 @@ defmodule Phoenix.LiveView.UploadChannel do
         {:DOWN, _, _, live_view_pid, reason},
         %{assigns: %{live_view_pid: live_view_pid}} = socket
       ) do
+    Logger.warn("[LiveView - Channel] handle_info DOWN")
     reason = if reason == :normal, do: {:shutdown, :closed}, else: reason
     {:stop, reason, socket}
   end
 
   def handle_info(:chunk_timeout, socket) do
+    Logger.warn("[LiveView - Channel] handle_info :chunk_timeout")
     {:stop, {:shutdown, :closed}, socket}
   end
 
   @impl true
   def handle_call({:consume, entry, func}, from, socket) do
+    Logger.warn("[LiveView - Channel] handle_call :consume")
+
     if socket.assigns.done? do
       result =
         cond do
@@ -94,6 +103,7 @@ defmodule Phoenix.LiveView.UploadChannel do
   end
 
   def handle_call(:cancel, from, socket) do
+    Logger.warn("[LiveView - Channel] handle_call :cancel")
     new_socket = close_file(socket)
     GenServer.reply(from, :ok)
     {:stop, {:shutdown, :closed}, new_socket}
