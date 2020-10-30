@@ -258,6 +258,8 @@ class LiveUploader {
   }
 
   static getEntryDataURL(inputEl, ref, callback) {
+    console.log("[LiveFileUpload] getEntryDataURL")
+
     let file = this.activeFiles(inputEl).find(file => this.genFileRef(file) === ref)
     let reader = new FileReader()
     reader.onload = (e) => callback(e.target.result)
@@ -265,6 +267,7 @@ class LiveUploader {
   }
 
   static hasUploadsInProgress(formEl) {
+    console.log("[LiveFileUpload] hasUploadsInProgress")
     let active = 0
     DOM.all(formEl, `input[type="file"]`, input => {
       if (input.getAttribute("data-phx-preflighted-refs") !== input.getAttribute("data-phx-done-refs")) {
@@ -275,7 +278,8 @@ class LiveUploader {
   }
 
   static serializeUploads(inputEl) {
-    let files = this.activeFiles(inputEl, "serialize")
+    console.log("[LiveFileUpload] serializeUploads")
+     let files = this.activeFiles(inputEl, "serialize")
     let fileData = {}
     files.forEach(file => {
       let entry = { path: inputEl.name }
@@ -291,15 +295,17 @@ class LiveUploader {
   }
 
   static clearFiles(inputEl) {
-    inputEl.value = null
+    console.log("[LiveFileUpload] clearFiles")
+   inputEl.value = null
     DOM.putPrivate(inputEl, "files", [])
   }
 
   static untrackFile(inputEl, file) {
-    DOM.putPrivate(inputEl, "files", DOM.private(inputEl, "files").filter(f => !Object.is(f, file)))
+    console.log("[LiveFileUpload] untrackFile")
   }
 
   static trackFiles(inputEl, files) {
+   console.log("[LiveFileUpload] trackFiles")
     if (inputEl.getAttribute("multiple") !== null) {
       let newFiles = files.filter(file => !this.activeFiles(inputEl).find(f => Object.is(f, file)))
       DOM.putPrivate(inputEl, "files", this.activeFiles(inputEl).concat(newFiles))
@@ -367,6 +373,7 @@ class LiveUploader {
 let channelUploader = function (entries, onError, resp, liveSocket) {
   let chunkSize = resp.config.chunk_size
   function uploadToChannel(entry, uploadChannel) {
+   console.log("[LiveFileUpload] uploadToChannel")
     const chunkReaderBlock = function (_offset, length, _file, handler) {
       var r = new window.FileReader()
       var blob = _file.slice(_offset, length + _offset)
