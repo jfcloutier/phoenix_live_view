@@ -13,7 +13,8 @@ defmodule Phoenix.LiveView.Upload do
   """
   def allow_upload(%Socket{} = socket, name, opts) when is_atom(name) and is_list(opts) do
     Logger.warn("[LiveView] allow_upload")
-   case uploaded_entries(socket, name) do
+
+    case uploaded_entries(socket, name) do
       {[], []} ->
         :ok
 
@@ -42,6 +43,7 @@ defmodule Phoenix.LiveView.Upload do
   """
   def disallow_upload(%Socket{} = socket, name) when is_atom(name) do
     Logger.warn("[LiveView] disallow_upload")
+
     case uploaded_entries(socket, name) do
       {[], []} ->
         uploads = socket.assigns[:uploads] || %{}
@@ -87,7 +89,8 @@ defmodule Phoenix.LiveView.Upload do
   """
   def update_upload_entry_meta(%Socket{} = socket, upload_conf_name, %UploadEntry{} = entry, meta) do
     Logger.warn("[LiveView] update_upload_entry_meta")
-   socket.assigns.uploads
+
+    socket.assigns.uploads
     |> Map.fetch!(upload_conf_name)
     |> UploadConfig.update_entry_meta(entry.ref, meta)
     |> update_uploads(socket)
@@ -150,8 +153,9 @@ defmodule Phoenix.LiveView.Upload do
   """
   def register_entry_upload(%Socket{} = socket, %UploadConfig{} = conf, pid, entry_ref)
       when is_pid(pid) do
-        Logger.warn("LiveView] register_entry_upload")
-        case UploadConfig.register_entry_upload(conf, pid, entry_ref) do
+    Logger.warn("LiveView] register_entry_upload")
+
+    case UploadConfig.register_entry_upload(conf, pid, entry_ref) do
       {:ok, new_config} ->
         entry = UploadConfig.get_entry_by_ref(new_config, entry_ref)
         {:ok, update_uploads(new_config, socket), entry}
@@ -216,7 +220,8 @@ defmodule Phoenix.LiveView.Upload do
   """
   def consume_uploaded_entries(%Socket{} = socket, name, func) when is_function(func, 2) do
     Logger.warn("LiveView] consume_uploaded_entries 2")
-   conf =
+
+    conf =
       socket.assigns[:uploads][name] ||
         raise ArgumentError, "no upload allowed for #{inspect(name)}"
 
@@ -237,8 +242,9 @@ defmodule Phoenix.LiveView.Upload do
   """
   def consume_uploaded_entry(%Socket{} = socket, %UploadEntry{} = entry, func)
       when is_function(func, 1) do
-        Logger.warn("LiveView] consume_uploaded_entry")
-        unless entry.done?,
+    Logger.warn("LiveView] consume_uploaded_entry")
+
+    unless entry.done?,
       do: raise(ArgumentError, "cannot consume uploaded files when entries are still in progress")
 
     conf = Map.fetch!(socket.assigns[:uploads], entry.upload_config)
@@ -252,6 +258,7 @@ defmodule Phoenix.LiveView.Upload do
   """
   def drop_upload_entries(%Socket{} = socket, %UploadConfig{} = conf) do
     Logger.warn("LiveView] drop_upload_entries")
+
     conf.entries
     |> Enum.reduce(conf, fn entry, acc -> UploadConfig.drop_entry(acc, entry) end)
     |> update_uploads(socket)
@@ -264,6 +271,8 @@ defmodule Phoenix.LiveView.Upload do
 
   defp consume_entries(%UploadConfig{} = conf, entries, func)
        when is_list(entries) and is_function(func) do
+    Logger.warn("[LiveView] consume_entries #{inspect(entries)}")
+
     if conf.external do
       results =
         entries
