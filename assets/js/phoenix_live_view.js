@@ -140,7 +140,11 @@ class UploadEntry {
   static isPreflighted(fileEl, file) {
     let preflightedRefs = fileEl.getAttribute("data-phx-preflighted-refs").split(",")
     let isPreflighted = preflightedRefs.indexOf(LiveUploader.genFileRef(file)) >= 0
-    return isPreflighted && this.isActive(fileEl, file)
+    answer =  isPreflighted && this.isActive(fileEl, file)
+    console.log("[LiveView] isPreflighted? file ...")
+    console.log(file)
+    console.log(answer)
+    return answer
   }
 
   constructor(fileEl, file, view) {
@@ -332,6 +336,8 @@ class LiveUploader {
   }
 
   static filesAwaitingPreflight(input) {
+    console.log("[LiveFileUpload] filesAwaitingPreflight with input...")
+    console.log(input)
     return this.activeFiles(input).filter(f => !UploadEntry.isPreflighted(input, f))
   }
 
@@ -2693,7 +2699,7 @@ export class View {
       refGenerator()
       return this.scheduleSubmit(formEl, () => this.pushFormSubmit(formEl, targetCtx, phxEvent, onReply))
     } else if (LiveUploader.inputsAwaitingPreflight(formEl).length > 0) {
-      console.log("[LiveFileUpload] inputs awating preflight > 0")
+      console.log("[LiveFileUpload] inputs awaiting preflight > 0")
       let [ref, els] = refGenerator()
       let proxyRefGen = () => [ref, els]
       this.uploadFiles(formEl, targetCtx, ref, cid, (uploads) => {
@@ -2706,7 +2712,7 @@ export class View {
         }, onReply)
       })
     } else {
-      console.log("[LiveFileUpload] inputs awating preflight == 0")
+      console.log("[LiveFileUpload] inputs awaiting preflight == 0")
       let formData = serializeForm(formEl)
       this.pushWithReply(refGenerator, "event", {
         type: "form",
