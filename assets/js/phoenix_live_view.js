@@ -132,7 +132,7 @@ let maybe = (el, callback) => el && callback(el)
 class UploadEntry {
   static isActive(fileEl, file) {
     console.log("[LiveView] isActive? file ...")
-    console.log({fileEl: fileEl, file: file})
+    console.log({ fileEl: fileEl, file: file })
     let isNew = file._phxRef === undefined
     let activeRefs = fileEl.getAttribute(PHX_ACTIVE_ENTRY_REFS).split(",")
     let isActive = activeRefs.indexOf(LiveUploader.genFileRef(file)) >= 0
@@ -142,7 +142,7 @@ class UploadEntry {
   static isPreflighted(fileEl, file) {
     let preflightedRefs = fileEl.getAttribute("data-phx-preflighted-refs").split(",")
     let isPreflighted = preflightedRefs.indexOf(LiveUploader.genFileRef(file)) >= 0
-    let answer =  isPreflighted && this.isActive(fileEl, file)
+    let answer = isPreflighted && this.isActive(fileEl, file)
     console.log("[LiveView] isPreflighted? file ...")
     console.log(file)
     console.log(answer)
@@ -327,6 +327,9 @@ class LiveUploader {
   }
 
   static activeFiles(input) {
+    console.log("[LiveFileUpload] activeFiles with DOM input and its files...")
+    console.log(input)
+    console.log(DOM.private(input, "files"))
     return (DOM.private(input, "files") || []).filter(f => UploadEntry.isActive(input, f))
   }
 
@@ -340,7 +343,7 @@ class LiveUploader {
   static filesAwaitingPreflight(input) {
     console.log("[LiveFileUpload] filesAwaitingPreflight with input activeFiles...")
     console.log(this.activeFiles(input))
-    let answer =  this.activeFiles(input).filter(f => !UploadEntry.isPreflighted(input, f))
+    let answer = this.activeFiles(input).filter(f => !UploadEntry.isPreflighted(input, f))
     console.log("Files awaiting preflight...")
     console.log(answer)
     return answer
