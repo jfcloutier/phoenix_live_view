@@ -279,7 +279,7 @@ class LiveUploader {
 
   static serializeUploads(inputEl) {
     console.log("[LiveFileUpload] serializeUploads")
-     let files = this.activeFiles(inputEl, "serialize")
+    let files = this.activeFiles(inputEl, "serialize")
     let fileData = {}
     files.forEach(file => {
       let entry = { path: inputEl.name }
@@ -296,7 +296,7 @@ class LiveUploader {
 
   static clearFiles(inputEl) {
     console.log("[LiveFileUpload] clearFiles")
-   inputEl.value = null
+    inputEl.value = null
     DOM.putPrivate(inputEl, "files", [])
   }
 
@@ -305,7 +305,7 @@ class LiveUploader {
   }
 
   static trackFiles(inputEl, files) {
-   console.log("[LiveFileUpload] trackFiles")
+    console.log("[LiveFileUpload] trackFiles")
     if (inputEl.getAttribute("multiple") !== null) {
       let newFiles = files.filter(file => !this.activeFiles(inputEl).find(f => Object.is(f, file)))
       DOM.putPrivate(inputEl, "files", this.activeFiles(inputEl).concat(newFiles))
@@ -373,7 +373,7 @@ class LiveUploader {
 let channelUploader = function (entries, onError, resp, liveSocket) {
   let chunkSize = resp.config.chunk_size
   function uploadToChannel(entry, uploadChannel) {
-   console.log("[LiveFileUpload] uploadToChannel")
+    console.log("[LiveFileUpload] uploadToChannel")
     const chunkReaderBlock = function (_offset, length, _file, handler) {
       var r = new window.FileReader()
       var blob = _file.slice(_offset, length + _offset)
@@ -2661,6 +2661,7 @@ export class View {
   }
 
   pushFormSubmit(formEl, targetCtx, phxEvent, onReply) {
+    console.log("[LiveFileUpload] pushFormSubmit")
     let filterIgnored = el => !closestPhxBinding(el, `${this.binding(PHX_UPDATE)}=ignore`, el.form)
     let refGenerator = () => {
       let disables = DOM.all(formEl, `[${this.binding(PHX_DISABLE_WITH)}]`)
@@ -2685,6 +2686,8 @@ export class View {
 
     let cid = this.targetComponentID(formEl, targetCtx)
     if (LiveUploader.hasUploadsInProgress(formEl)) {
+      console.log("[LiveFileUpload] Already has uploads in progress")
+
       refGenerator()
       return this.scheduleSubmit(formEl, () => this.pushFormSubmit(formEl, targetCtx, phxEvent, onReply))
     } else if (LiveUploader.inputsAwaitingPreflight(formEl).length > 0) {
