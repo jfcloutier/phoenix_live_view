@@ -329,6 +329,7 @@ class LiveUploader {
   static activeFiles(input) {
     console.log("[LiveFileUpload] activeFiles with DOM input and its files...")
     console.log(input)
+    console.log(input.files)
     console.log(DOM.private(input, "files"))
     return (DOM.private(input, "files") || []).filter(f => UploadEntry.isActive(input, f))
   }
