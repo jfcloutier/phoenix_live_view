@@ -219,7 +219,7 @@ defmodule Phoenix.LiveView.Upload do
   Consumes the uploaded entries or raises if entries are still in progress.
   """
   def consume_uploaded_entries(%Socket{} = socket, name, func) when is_function(func, 2) do
-    Logger.warn("LiveView] consume_uploaded_entries 2")
+    Logger.warn("LiveView] consume_uploaded_entries in #{socket.assigns[:uploads]}")
 
     conf =
       socket.assigns[:uploads][name] ||
