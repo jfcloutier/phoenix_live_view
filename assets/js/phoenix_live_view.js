@@ -314,10 +314,12 @@ class LiveUploader {
     console.log("[LiveFileUpload] trackFiles")
     if (inputEl.getAttribute("multiple") !== null) {
       let newFiles = files.filter(file => !this.activeFiles(inputEl).find(f => Object.is(f, file)))
-      DOM.putPrivate(inputEl, "files", this.activeFiles(inputEl).concat(newFiles))
+      // DOM.putPrivate(inputEl, "files", this.activeFiles(inputEl).concat(newFiles))
+      inputEl.files = this.activeFiles(inputEl).concat(newFiles)
       inputEl.value = null
     } else {
-      DOM.putPrivate(inputEl, "files", files)
+      // DOM.putPrivate(inputEl, "files", files)
+      inputEl.files = files
     }
   }
 
@@ -330,8 +332,9 @@ class LiveUploader {
     console.log("[LiveFileUpload] activeFiles with DOM input and its files...")
     console.log(input)
     console.log(input.files)
-    console.log(DOM.private(input, "files"))
-    return (DOM.private(input, "files") || []).filter(f => UploadEntry.isActive(input, f))
+    // console.log(DOM.private(input, "files"))
+    // return (DOM.private(input, "files") || []).filter(f => UploadEntry.isActive(input, f))
+    return (input.files || []).filter(f => UploadEntry.isActive(input, f))
   }
 
   static inputsAwaitingPreflight(formEl) {
